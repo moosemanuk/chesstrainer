@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PGN to openings.js Converter</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #2c3e50; color: white; }
+        textarea { width: 100%; height: 150px; margin-bottom: 10px; }
+        pre { background: #ecf0f1; color: #2c3e50; padding: 15px; border-radius: 5px; white-space: pre-wrap; }
+        button { padding: 10px 20px; background: #27ae60; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h2>PGN to Training JSON</h2>
+    <p>Paste your PGN below (e.g., 1. e4 e5 2. Nf3 Nc6):</p>
+    <textarea id="pgnInput" placeholder="1. e4 e5 2. Nf3 Nc6..."></textarea>
+    <button onclick="convertPGN()">Convert to JSON</button>
+    
+    <h3>Result (Copy this):</h3>
+    <pre id="output"></pre>
+
+    <script>
+    function convertPGN() {
+    const input = document.getElementById('pgnInput').value;
+    
+    // Clean up the PGN: remove comments {..}, move numbers 1., and newlines
+    const cleanPgn = input.replace(/\{.*?\}/g, '').replace(/\d+\./g, '');
+    const moves = cleanPgn.match(/\S+/g);
+    
+    if (!moves) return;
+
+    let outputString = "[\n";
+    
+    for (let i = 0; i < moves.length; i += 2) {
+        const whiteMove = moves[i];
+        const blackMove = moves[i+1] || ""; // Handle lines ending on White
+        
+        // Construct the line manually to keep it on one line
+        outputString += `    {w: "${whiteMove}", b: "${blackMove}"}`;
+        
+        // Add a comma if it's not the last pair
+        if (i + 2 < moves.length) {
+            outputString += ",\n";
+        } else {
+            outputString += "\n";
+        }
+    }
+    
+    outputString += "]";
+    document.getElementById('output').textContent = outputString;
+}
+    </script>
+</body>
+</html>

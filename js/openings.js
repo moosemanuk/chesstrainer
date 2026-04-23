@@ -28,5 +28,15 @@ const openingTrainingLines = {
             {w: "d4", b: "cxd4"}, 
             {w: "Nxd4", b: "Nf6"}, 
             {w: "Nc3", b: "g6"} ]
+    },
+    "french_defence": {
+        "classical": [
+            {w: "e4", b: "e6"},
+            {w: "d4", b: "d5"},
+            {w: "Nc3", b: "Nf6"},
+            {w: "Bg5", b: "Be7"},
+            {w: "e5", b: "Nfd7"},
+            {w: "Bxe7", b: "Qxe7"},
+            {w: "f4", b: "O-O"} ]
     }
 }
