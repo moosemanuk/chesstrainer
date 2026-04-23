@@ -157,7 +157,8 @@ function resetDrill()
 
     $('#status-message').text("Choose an opening and start!").removeClass('status-success');
     $('#resetBtn').text("Start drill");
-    $('#resetBtn').prop('disabled', false);
+    $('#flipBtn').prop('disabled', false);
+    
     
     const mainKey = $('#openingSelect').val();
     const varKey = $('#variationSelect').val();
@@ -168,10 +169,9 @@ function resetDrill()
     }    
    
     currentLine = openingTrainingLines[mainKey][varKey];
-    $('#flipBtn').prop('disabled', false);
     board.start();
     board.orientation(userColour === 'w' ? 'white' : 'black');
-    $('#status-message').text("New variation loaded. Your move!").removeClass('status-success');
+    $('#status-message').text("Choose an opening and start!").removeClass('status-success');
 
     if(userColour === 'b')
         {
@@ -209,7 +209,25 @@ $(document).ready(function()
     });
 
     $('#variationSelect').on('change', resetDrill);
-    $('#resetBtn').on('click', resetDrill);
+    $('#resetBtn').on('click', function()
+    {
+        if(!drillStarted)
+        {
+            drillStarted = true;
+            $(this).text("Restart drill");
+
+            $('#flipBtn').prop('disabled', true);
+            if(userColour === 'b')
+            {
+                setTimeout(makeComputerMove, 500);
+            }            
+        }
+        else
+        {
+            resetDrill();
+        }
+      
+    })
     
     $('#flipBtn').on('click', function()
     {
