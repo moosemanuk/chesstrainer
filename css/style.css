@@ -44,6 +44,21 @@ select, button
     cursor: pointer;
 }
 
+#flipBtn
+{
+    background-color: #3498db;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+#flipBtn:disabled
+{
+    background-color: #7f8c8d;
+    cursor: not-allowed;
+    opacity: 0.6;
+    transform: scale(1) !important;
+}
+
 .wrong-move
 {
     background-color: rgba(255, 0, 0, 0.5) !important;

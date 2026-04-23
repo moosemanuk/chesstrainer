@@ -1,7 +1,8 @@
 var game = new Chess();
-var currentLine = openingTrainingLines.sicilian_najdorf;
+var currentLine = []
 var moveIndex = 0;
 var userColour = 'w';
+var drillStarted = false;
 var config = {
     draggable: true,
     position: 'start',
@@ -18,18 +19,26 @@ function makeComputerMove()
     var computerColour = (userColour === 'w') ? 'b' : 'w';
     var computerMove = currentLine[moveIndex][computerColour];
 
+    if(moveIndex >= currentLine.length)
+    {
+        return;
+    }
+
     if(computerMove)
     {
         game.move(computerMove);
         board.position(game.fen());
         
-        if(moveIndex === currentLine.length - 1)
+        if(userColour === 'w' && moveIndex === currentLine.length - 1)
         {
             showSuccess();
         }
         else
         {
-            moveIndex++;
+            if(computerColour === 'b')
+            {
+                moveIndex++;
+            }
         }
     }    
 }
@@ -40,6 +49,12 @@ function onDrop(source, target)
     {
         return 'snapback';
     }
+
+    if(game.turn() !== userColour)
+    {
+        return 'snapback';
+    }
+
     var move = game.move({
         from: source,
         to: target,
@@ -47,25 +62,32 @@ function onDrop(source, target)
     })
     if (move === null) return 'snapback';
 
-    var expectedMove = currentLine[moveIndex][userColour];
+    var expectedMove = (userColour === 'w') ? currentLine[moveIndex].w : currentLine[moveIndex].b;
 
-    if (move.san !== expectedMove)
+    console.log("move.san:", move.san, "expected:", expectedMove);
+
+    if (move === null || move.san !== expectedMove)
     {
+        if(move === null) game.undo();    
         handleWrongMove(target);
         return 'snapback';
     }
 
-    if (userColour === 'w' && !currentLine[moveIndex].b)
+    drillStarted = true;
+    if(userColour === 'b')
     {
-        showSuccess();
-    }
-    else if (userColour === 'b' && moveIndex === currentLine.length -1)
+        if(moveIndex === currentLine.length - 1)       
+        {
+            showSuccess();
+        }
+        else        
+        {
+            moveIndex++;
+            setTimeout(makeComputerMove, 500);
+        }
+    } else
     {
-        ShowSuccess();
-    }
-    else
-    {
-        window.setTimeout(makeComputerMove, 250);
+        setTimeout(makeComputerMove, 500);
     }
 }
 
@@ -131,16 +153,31 @@ function resetDrill()
 {
     game.reset();
     moveIndex = 0;
+    drillStarted = false;
+
+    $('#status-message').text("Choose an opening and start!").removeClass('status-success');
+    $('#resetBtn').text("Start drill");
+    $('#resetBtn').prop('disabled', false);
     
     const mainKey = $('#openingSelect').val();
     const varKey = $('#variationSelect').val();
-    
-    // Path: Opening -> Variation
-    currentLine = openingTrainingLines[mainKey][varKey];
 
-    // ... (rest of your board reset code)
+    if (!mainKey || !varKey || !openingTrainingLines[mainKey]) 
+    {
+        return; 
+    }    
+   
+    currentLine = openingTrainingLines[mainKey][varKey];
+    $('#flipBtn').prop('disabled', false);
     board.start();
+    board.orientation(userColour === 'w' ? 'white' : 'black');
     $('#status-message').text("New variation loaded. Your move!").removeClass('status-success');
+
+    if(userColour === 'b')
+        {
+            $('#flipBtn').prop('disabled', true);
+            setTimeout(makeComputerMove, 500);
+        }
 }
 
 function showSuccess()
@@ -156,13 +193,36 @@ function showSuccess()
 // keep this at the bottom of this file
 $(document).ready(function()
 {
+    userColour = 'w';
+    drillStarted = false;
     populateMainDropdown();
+
+    console.log("Chess Trainer initialized");
+    console.log("Available openings:", Object.keys(openingTrainingLines));
+    console.log("Default user colour:", userColour === 'w' ? "White" : "Black");
+    console.log("User starts as " + userColour);
+    
     $('#openingSelect').on('change', function()
     {
         updateVariationDropdown();
         resetDrill();
     });
+
     $('#variationSelect').on('change', resetDrill);
     $('#resetBtn').on('click', resetDrill);
+    
+    $('#flipBtn').on('click', function()
+    {
+        userColour = (userColour === 'w') ? 'b' : 'w';
+        $(this).text("Training as: " + (userColour === 'w' ? "White" : "Black"));
+        board.orientation(userColour === 'w' ? 'white' : 'black');
+        console.log("User flipped to " + (userColour === 'w' ? "White" : "Black"));
+        resetDrill();
+        console.log("Flipped! Side is now:", userColour);
+    });
+
+    $(this).text("Training as: " + (userColour === 'w' ? "White" : "Black"));
+    board.orientation(userColour === 'w' ? 'white' : 'black');
+    console.log("User is training as " + userColour);
     resetDrill();
 })

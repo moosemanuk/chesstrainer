@@ -6,7 +6,7 @@ const openingTrainingLines = {
             {w: "Bc4", b: "Bc5"},
             {w: "c3", b: "Nf6"},
             {w: "d4", b: "exd4"},
-            {w: "cxd4", b: "Bb4"} ],
+            {w: "cxd4", b: "Bb4+"} ],
         "evans_gambit": [ 
             {w: "e4", b: "e5"}, 
             {w: "Nf3", b: "Nc6"}, 
