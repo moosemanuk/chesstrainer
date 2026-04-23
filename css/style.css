@@ -52,6 +52,14 @@ select, button
     margin: 10px auto;    
 }
 
+.container
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px
+}
+
 #flipBtn
 {
     background-color: #3498db;
