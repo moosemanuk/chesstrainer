@@ -44,6 +44,14 @@ select, button
     cursor: pointer;
 }
 
+#myBoard
+{
+    touch-action: none;
+    width: 95vw;
+    max-width: 450px;
+    margin: 10px auto;    
+}
+
 #flipBtn
 {
     background-color: #3498db;
