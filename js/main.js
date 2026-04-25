@@ -186,7 +186,7 @@ function showSuccess()
         .text("🏆 Drill successfully completed")
         .removeClass('status-active status-neutral')
         .addClass('status-success');       
-    
+    $('#flipBtn').prop('disabled', false);
     console.log("Drill finished successfully");
 }
 
