@@ -13,7 +13,7 @@ const openingTrainingLines = {
             {w: "Bc4", b: "Bc5"}, 
             {w: "b4", b: "Bxb4"},
             {w: "c3", b: "Ba5"},
-            {w: "d4", b: ""} ]
+            {w: "d4", b: "d6"} ]
     },
     "sicilian_defence": {
         "najdorf": [ 
